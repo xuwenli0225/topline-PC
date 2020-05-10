@@ -1,45 +1,78 @@
 <template>
-  <el-card>
+  <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>粉丝统计</span>
     </div>
-    <div class="text item">
-      <div id="main" style="width: 600px; height: 400px; "></div>
-    </div>
+    <!--创建图像显示容器占位符-->
+    <div id="main" ref="main3" style="width:750px;height:400px;"></div>
   </el-card>
 </template>
 
 <script>
+// 引入echarts
 import echarts from 'echarts'
+
 export default {
-  name: 'Fans',
+  // 钩子函数created/mounted，使得页面加载过程中直接调用methods方法执行
+  // 如果方法操作data，就通过created触发
+  // 如果方法操作页面dom元素，就通过mounted触发
+  // mounted: 代表页面内容被解析完成，并完成了页面回填操作
   mounted () {
     this.paintPic()
   },
+
   methods: {
+    // 生成图像
     paintPic () {
-      var myChart = echarts.init(document.getElementById('main'))
-      myChart.setOption({
+      // 获得页面元素对象有两种方式：dom和vue两种
+      // 它们的记过完全一致
+      // var myChart = echarts.init(document.getElementById('main'))
+      var myChart = echarts.init(this.$refs.main3)
+
+      // 饼状图核心数据部分
+      var option = {
         title: {
-          text: 'ECharts'
+          text: '站点用户访问来源',
+          subtext: '纯属虚构',
+          x: 'right'
         },
-        tooltip: {},
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        // 鼠标悬停显示效果
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        yAxis: {},
+        // 图例
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+        },
+        // 系列数据
         series: [
           {
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 33, 62, 42, 88]
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: [
+              { value: 335, name: '直接访问' },
+              { value: 310, name: '邮件营销' },
+              { value: 234, name: '联盟广告' },
+              { value: 135, name: '视频广告' },
+              { value: 1548, name: '搜索引擎' }
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
           }
         ]
-      })
+      }
+      myChart.setOption(option)
     }
   }
 }
 </script>
-
-<style lang="less" scoped>
-</style>

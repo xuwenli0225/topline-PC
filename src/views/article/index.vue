@@ -65,6 +65,11 @@
                 size="mini"
                 @click="$router.push(`/articleedit/${stData.row.id}`)"
               >修改</el-button>
+              <el-button
+                type="success"
+                size="mini"
+                @click="$router.push(`/articledetail/${stData.row.id}`)"
+              >详情</el-button>
               <el-button type="danger" size="mini" @click="del(stData.row.id)">删除</el-button>
             </template>
           </el-table-column>

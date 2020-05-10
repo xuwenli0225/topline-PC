@@ -21,11 +21,10 @@ const routes = [
       { path: '/material', name: 'material', component: () => import('@/views/material/material.vue') },
       { path: '/article', name: 'article', component: () => import('@/views/article') },
       { path: '/articleadd', name: 'articleadd', component: () => import('@/views/articleadd/articleadd.vue') },
-      { path: '/articleedit/:aid', name: 'articleedit', component: () => import('@/views/articleedit/articleedit.vue') }
-
+      { path: '/articleedit/:aid', name: 'articleedit', component: () => import('@/views/articleedit/articleedit.vue') },
+      { path: '/articledetail/:aid', name: 'articledetail', component: () => import('@/views/articledetail/articledetail.vue') }
     ]
   }
-
 ]
 const router = new VueRouter({
   routes
