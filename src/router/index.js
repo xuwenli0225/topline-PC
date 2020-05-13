@@ -5,6 +5,7 @@ import 'nprogress/nprogress.css'
 Vue.use(VueRouter)
 const routes = [
   { path: '/login', name: 'login', component: () => import('@/views/login') },
+  { path: '/register', name: 'register', component: () => import('@/views/register') },
   {
     path: '/home',
     name: 'home',
@@ -18,6 +19,7 @@ const routes = [
       },
       { path: '/account', name: 'account', component: () => import('@/views/account/account.vue') },
       { path: '/fans', name: 'fans', component: () => import('@/views/fans/fans.vue') },
+      { path: '/comments', name: 'comments', component: () => import('@/views/comments/comments.vue') },
       { path: '/material', name: 'material', component: () => import('@/views/material/material.vue') },
       { path: '/article', name: 'article', component: () => import('@/views/article') },
       { path: '/articleadd', name: 'articleadd', component: () => import('@/views/articleadd/articleadd.vue') },

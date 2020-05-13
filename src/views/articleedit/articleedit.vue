@@ -18,6 +18,17 @@
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <div style="margin-top:10px" v-if="editForm.cover.type===1">
+            <my-cover v-model="editForm.cover.images[0]"></my-cover>
+          </div>
+          <div style="margin-top:10px" v-if="editForm.cover.type===3">
+            <my-cover
+              style="display:inline-block;margin-right:15px"
+              v-model="editForm.cover.images[i-1]"
+              v-for="i in 3"
+              :key="i"
+            ></my-cover>
+          </div>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
           <channel-com @slt="selectHandler" :cid="editForm.channel_id"></channel-com>
@@ -36,9 +47,10 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import ChannelCom from '@/components/channel.vue'
+import MyCover from '@/components/my-cover.vue'
 export default {
-  name: 'ArticleEdit',
-  components: { quillEditor, ChannelCom },
+  // name: 'ArticleEdit',
+  components: { quillEditor, ChannelCom, MyCover },
   data () {
     return {
       editFormRules: {
@@ -50,13 +62,13 @@ export default {
         channel_id: [{ required: true, message: '频道必选' }]
       },
       editForm: {
-        title: '',
-        content: '',
+        title: null,
+        content: null,
         cover: {
-          type: 0,
+          type: null,
           images: []
         },
-        channel_id: ''
+        channel_id: null
       }
     }
   },

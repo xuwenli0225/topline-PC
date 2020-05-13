@@ -19,7 +19,7 @@
           </template>
           <el-menu-item index="/articleadd">发布文章</el-menu-item>
           <el-menu-item index="/article">文章列表</el-menu-item>
-          <el-menu-item index="2-3">评论列表</el-menu-item>
+          <el-menu-item index="/comments">评论列表</el-menu-item>
           <el-menu-item index="/material">素材管理</el-menu-item>
         </el-submenu>
         <el-menu-item index="/fans" :width="isCollapse? '45px': '200px'">
@@ -42,9 +42,6 @@
           <span>信息创造价值</span>
         </div>
         <div id="rt">
-          <el-input type="text" placeholder="请输入搜素内容" style="width:240px;">
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input>
           <span style="margin: 0 25px;">消息</span>
           <el-dropdown trigger="click">
             <span class="el-dropdown-link">
@@ -157,7 +154,8 @@ export default {
     }
   }
   .el-main {
-    background-color: rgb(242, 243, 245);
+    // background-color: rgb(242, 243, 245);
+    background-color: #fff;
   }
 }
 </style>

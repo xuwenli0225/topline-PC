@@ -3,13 +3,13 @@
     <div slot="header" class="clearfix">
       <span>文章详情</span>
     </div>
-    <div class="text item">
-      <el-form ref="editFormRef" :model="editForm" label-width="120px">
+    <div class="text item" disabled>
+      <el-form disabled :model="editForm" label-width="120px" :rules="editFormRules">
         <el-form-item label="标题" prop="title">
           <el-input type="text" v-model="editForm.title"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <quill-editor v-model="editForm.content"></quill-editor>
+          <el-input type="text" v-model="editForm.content"></el-input>
         </el-form-item>
         <el-form-item label="封面">
           <el-radio-group v-model="editForm.cover.type">
@@ -18,33 +18,46 @@
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <div style="margin-top:10px" v-if="editForm.cover.type===1">
+            <my-cover v-model="editForm.cover.images[0]"></my-cover>
+          </div>
+          <div style="margin-top:10px" v-if="editForm.cover.type===3">
+            <my-cover
+              style="display:inline-block;margin-right:15px"
+              v-model="editForm.cover.images[i-1]"
+              v-for="i in 3"
+              :key="i"
+            ></my-cover>
+          </div>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
-          <channel-com @slt="selectHandler" :cid="editForm.channel_id"></channel-com>
+          <channel-com :cid="editForm.channel_id"></channel-com>
         </el-form-item>
       </el-form>
     </div>
   </el-card>
 </template>
 <script>
+// <quill-editor disabled v-model="editForm.content"></quill-editor>
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-import { quillEditor } from 'vue-quill-editor'
+// import { quillEditor } from 'vue-quill-editor'
 import ChannelCom from '@/components/channel.vue'
+import MyCover from '@/components/my-cover.vue'
 export default {
-  name: 'ArticleDetail',
-  components: { quillEditor, ChannelCom },
+  // name: 'ArticleEdit',
+  components: { ChannelCom, MyCover },
   data () {
     return {
       editForm: {
-        title: '',
-        content: '',
+        title: null,
+        content: null,
         cover: {
-          type: 0,
+          type: null,
           images: []
         },
-        channel_id: ''
+        channel_id: null
       }
     }
   },
@@ -57,31 +70,21 @@ export default {
     this.getArticleByAid()
   },
   methods: {
-    selectHandler (val) {
-      this.editForm.channel_id = val
-    },
     getArticleByAid () {
       const pro = this.$http.get(`/articles/${this.aid}`)
       pro
         .then(result => {
           if (result.data.message === 'OK') {
             this.editForm = result.data.data
+            const len = this.editForm.content.split('').length - 4
+            this.editForm.content = this.editForm.content
+              .split('')
+              .slice(3, len)
+              .join('')
           }
         })
         .catch(err => {
           return this.$message.error('获得文章失败：' + err)
-        })
-    },
-    getChannelList () {
-      var pro = this.$http.get('/channels')
-      pro
-        .then(result => {
-          if (result.data.message === 'OK') {
-            this.channelList = result.data.data.channels
-          }
-        })
-        .catch(err => {
-          return this.$message.error('获得文章频道错误：' + err)
         })
     }
   }

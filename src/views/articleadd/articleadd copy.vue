@@ -12,24 +12,19 @@
           <quillEditor v-model="addForm.content"></quillEditor>
         </el-form-item>
         <el-form-item label="封面：">
-          <el-radio-group @change="addForm.cover.images=[]" v-model="addForm.cover.type">
+          <el-radio-group v-model="addForm.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
-          <!-- 封面图组件 -->
-          <div style="margin-top:10px" v-if="addForm.cover.type===1">
-            <my-cover v-model="addForm.cover.images[0]"></my-cover>
-          </div>
-          <div style="margin-top:10px" v-if="addForm.cover.type===3">
-            <my-cover
-              style="display:inline-block;margin-right:15px"
-              v-model="addForm.cover.images[i-1]"
-              v-for="i in 3"
-              :key="i"
-            ></my-cover>
-          </div>
+          <ul>
+            <li class="uploadbox" @click="showDialog(item)" v-for="item in covernum" :key="item">
+              <span>点击图标选中图片</span>
+              <img v-if="addForm.cover.images[item-1]" :src="addForm.cover.images[item-1]" alt />
+              <div v-else class="el-icon-picture-outline"></div>
+            </li>
+          </ul>
         </el-form-item>
         <el-form-item label="频道：" prop="channel_id">
           <channel-com @slt="selectHandler"></channel-com>
@@ -40,6 +35,17 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog title="素材图片" :visible.sync="dialogVisible" width="60%" @close="clearImage">
+      <ul>
+        <li class="image-box" v-for="item in imageList" :key="item.id">
+          <img :src="item.url" alt="没有图片" @click="clkImage" />
+        </li>
+      </ul>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="imageOK">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -49,10 +55,9 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import ChannelCom from '@/components/channel.vue'
-import MyCover from '@/components/my-cover.vue'
 export default {
   name: 'articleadd',
-  components: { quillEditor, ChannelCom, MyCover },
+  components: { quillEditor, ChannelCom },
   data () {
     return {
       materialUrl: '',
@@ -73,20 +78,48 @@ export default {
         channel_id: [{ required: true, message: '频道必选' }]
       },
       addForm: {
-        title: null,
-        content: null,
+        title: '',
+        content: '',
         cover: {
           type: 0,
           images: []
         },
-        channel_id: null
+        channel_id: ''
       }
+    }
+  },
+  computed: {
+    covernum () {
+      if (this.addForm.cover.type > 0) {
+        return this.addForm.cover.type
+      }
+      return 0
     }
   },
   created () {
     this.getImageList()
   },
   methods: {
+    clearImage () {
+      const lis = document.querySelectorAll('.image-box')
+      for (var i = 0; i < lis.length; i++) {
+        lis[i].style.border = ''
+      }
+      this.materialUrl = ''
+    },
+    imageOK () {
+      if (this.materialUrl) {
+        this.addForm.cover.images[this.xu] = this.materialUrl
+        this.dialogVisible = false
+      } else {
+        this.$message.error('一个图片都没有选取')
+      }
+    },
+    clkImage (evt) {
+      this.clearImage()
+      evt.target.parentNode.style.border = '4px solid red'
+      this.materialUrl = evt.target.src
+    },
     getImageList () {
       const pro = this.$http.get('/user/images', { params: this.querycdt })
       pro
@@ -98,6 +131,11 @@ export default {
         .catch(err => {
           return this.$message.error('获得素材图片列表错误' + err)
         })
+    },
+    showDialog (n) {
+      this.xu = n - 1
+      this.dialogVisible = true
+      this.clearImage()
     },
     selectHandler (val) {
       this.addForm.channel_id = val
