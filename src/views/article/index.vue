@@ -105,6 +105,12 @@ export default {
         this.searchForm.end_pubdate = ''
       }
       this.getArticleList()
+    },
+    searchForm: {
+      handler: function (newv, oldv) {
+        this.getArticleList()
+      },
+      deep: true
     }
   },
   created () {
@@ -130,7 +136,7 @@ export default {
       this.searchForm.channel_id = val
     },
     del (id) {
-      this.$confirm('确认要删除该数据吗？', '删除', {
+      this.$confirm('确认要删除该数据么？', '删除', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -139,11 +145,10 @@ export default {
           const pro = this.$http.delete(`/articles/${id}`)
           pro
             .then(result => {
-              this.$message.success('文章删除成功！')
               this.getArticleList()
             })
             .catch(err => {
-              return this.$message.error('删除文章错误：' + err)
+              return this.$message.error('删除文章失败:' + err)
             })
         })
         .catch(() => {})

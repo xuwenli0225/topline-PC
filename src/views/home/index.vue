@@ -50,8 +50,7 @@
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人信息</el-dropdown-item>
-              <el-dropdown-item>github地址</el-dropdown-item>
+              <el-dropdown-item @click.native="account()">账户信息</el-dropdown-item>
               <el-dropdown-item @click.native="logout()">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -89,6 +88,9 @@ export default {
     })
   },
   methods: {
+    account () {
+      this.$router.push('/account')
+    },
     logout () {
       this.$confirm('确认要退出系统吗？', '退出', {
         confirmButtonText: '确定',

@@ -2,6 +2,7 @@
   <el-card class="box-card">
     <div slot="header" class="clearfix">
       <span>文章详情</span>
+      <el-button type="primary" size="mini" @click="back">返回</el-button>
     </div>
     <div class="text item" disabled>
       <el-form disabled :model="editForm" label-width="120px" :rules="editFormRules">
@@ -70,6 +71,9 @@ export default {
     this.getArticleByAid()
   },
   methods: {
+    back () {
+      this.$router.back()
+    },
     getArticleByAid () {
       const pro = this.$http.get(`/articles/${this.aid}`)
       pro
@@ -94,5 +98,8 @@ export default {
 <style lang="less" scoped>
 .el-form /deep/ .ql-editor {
   height: 200px;
+}
+.box-card .clearfix .el-button {
+  float: right;
 }
 </style>
